@@ -340,6 +340,7 @@ $list_view=<<<EOT
 				<th class="text-center text-nowrap vmiddle" style="width:3%;padding: 10px;background-color: #CBF3FC;">區域</th>
 				<th class="text-center text-nowrap vmiddle" style="width:3%;padding: 10px;background-color: #CBF3FC;">案件編號</th>
 				<th class="text-center text-nowrap vmiddle" style="width:10%;padding: 10px;background-color: #CBF3FC;">工程名稱</th>
+				<th class="text-center text-nowrap vmiddle" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包開始日期</th>
 				<th class="text-center text-nowrap vmiddle" style="width:7%;padding: 10px;background-color: #CBF3FC;">下包發包進度</th>
 				<th class="text-center text-nowrap vmiddle" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工1</th>
 				<th class="text-center text-nowrap vmiddle" style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層1</th>
@@ -385,8 +386,9 @@ $show_view=<<<EOT
 </style>
 
 $list_view
-
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 <script type="text/javascript" charset="utf-8">
+
 	var oTable;
 	$(document).ready(function() {
 		$('#db_table').dataTable( {
@@ -450,6 +452,13 @@ $list_view
 				$('td:eq(4)', nRow).html( '<div class="d-flex justify-content-center align-items-center size12 text-center" style="height:auto;min-height:32px;">'+construction_id+'</div>' );
 
 
+				// 下包開始日期
+				var subcontracting_start_date = "";
+				subcontracting_start_date = (aData[24] && aData[24] !== "0000-00-00") ? dayjs(String(aData[24]).slice(0,10)).subtract(3, "month").format("YYYY-MM-DD"): "";
+				
+
+				$('td:eq(5)', nRow).html( '<div class="d-flex justify-content-center align-items-center size12 text-center" style="height:auto;min-height:32px;">'+subcontracting_start_date+'</div>' );
+
 				var subcontractor_name1 = '<div id="subcontractor_id1'+aData[11]+'"></div>';
 				var subcontractor_name2 = '<div id="subcontractor_id2'+aData[11]+'"></div>';
 				var subcontractor_name3 = '<div id="subcontractor_id3'+aData[11]+'"></div>';
@@ -462,7 +471,7 @@ $list_view
 				if (aData[23] != null && aData[23] != "")
 					subcontracting_progress = aData[23];
 
-				$('td:eq(5)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontracting_progress+'</div>' );
+				$('td:eq(6)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontracting_progress+'</div>' );
 
 
 				//下包代工1
@@ -470,84 +479,84 @@ $list_view
 				if (aData[6] != null && aData[6] != "")
 					subcontractor_id1 = aData[6];
 
-				$('td:eq(6)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name1+'</div>' );
+				$('td:eq(7)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name1+'</div>' );
 
 				//施作樓層1
 				var construction_floor1 = "";
 				if (aData[7] != null && aData[7] != "")
 					construction_floor1 = aData[7];
 
-				$('td:eq(7)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor1+'</div>' );
+				$('td:eq(8)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor1+'</div>' );
 
 				//合約總價1(含稅)
 				var total_contract_amt1 = "";
 				if (aData[8] != null && aData[8] != "")
 					total_contract_amt1 = number_format(aData[8]);
 
-				$('td:eq(8)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt1+'</div>' );
+				$('td:eq(9)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt1+'</div>' );
 
 				//下包代工2
 				var subcontractor_id2 = "";
 				if (aData[14] != null && aData[14] != "")
 					subcontractor_id2 = aData[14];
 
-				$('td:eq(9)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name2+'</div>' );
+				$('td:eq(10)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name2+'</div>' );
 
 				//施作樓層2
 				var construction_floor2 = "";
 				if (aData[15] != null && aData[15] != "")
 					construction_floor2 = aData[15];
 
-				$('td:eq(10)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor2+'</div>' );
+				$('td:eq(11)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor2+'</div>' );
 
 				//合約總價2(含稅)
 				var total_contract_amt2 = "";
 				if (aData[16] != null && aData[16] != "")
 					total_contract_amt2 = number_format(aData[16]);
 
-				$('td:eq(11)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt2+'</div>' );
+				$('td:eq(12)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt2+'</div>' );
 
 				//下包代工3
 				var subcontractor_id3 = "";
 				if (aData[17] != null && aData[17] != "")
 					subcontractor_id3 = aData[17];
 
-				$('td:eq(12)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name3+'</div>' );
+				$('td:eq(13)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name3+'</div>' );
 
 				//施作樓層3
 				var construction_floor3 = "";
 				if (aData[18] != null && aData[18] != "")
 					construction_floor3 = aData[18];
 
-				$('td:eq(13)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor3+'</div>' );
+				$('td:eq(14)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor3+'</div>' );
 
 				//合約總價3(含稅)
 				var total_contract_amt3 = "";
 				if (aData[19] != null && aData[19] != "")
 					total_contract_amt3 = number_format(aData[19]);
 
-				$('td:eq(14)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt3+'</div>' );
+				$('td:eq(15)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt3+'</div>' );
 
 				//下包代工4
 				var subcontractor_id4 = "";
 				if (aData[20] != null && aData[20] != "")
 					subcontractor_id4 = aData[20];
 
-				$('td:eq(15)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name4+'</div>' );
+				$('td:eq(16)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontractor_name4+'</div>' );
 
 				//施作樓層4
 				var construction_floor4 = "";
 				if (aData[21] != null && aData[21] != "")
 					construction_floor4 = aData[21];
 
-				$('td:eq(16)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor4+'</div>' );
+				$('td:eq(17)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor4+'</div>' );
 
 				//合約總價4(含稅)
 				var total_contract_amt4 = "";
 				if (aData[22] != null && aData[22] != "")
 					total_contract_amt4 = number_format(aData[22]);
 
-				$('td:eq(17)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt4+'</div>' );
+				$('td:eq(18)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt4+'</div>' );
 
 				/*
 				//確認
@@ -575,7 +584,7 @@ $list_view
 						+'</div>';
 				}
 
-				$('td:eq(18)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center" style="height:auto;min-height:32px;">'+show_btn+'</div>' );
+				$('td:eq(19)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center" style="height:auto;min-height:32px;">'+show_btn+'</div>' );
 
 				//最後修改
 				var last_modify7 = "";
@@ -587,7 +596,7 @@ $list_view
 				if (aData[12] != null && aData[12] != "")
 					member_name = '<div class="text-nowrap">'+aData[12]+'</div>';
 
-				$('td:eq(19)', nRow).html( '<div class="text-center" style="height:auto;min-height:32px;">'+last_modify7+member_name+'</div>' );
+				$('td:eq(20)', nRow).html( '<div class="text-center" style="height:auto;min-height:32px;">'+last_modify7+member_name+'</div>' );
 
 
 				return nRow;
