@@ -34,7 +34,7 @@
 
 	$aColumns = array( 'a.status1','a.status2','a.region','a.case_id','a.construction_id','b.engineering_name','a.subcontractor_id1','a.construction_floor1','a.total_contract_amt1','a.makeby7','a.last_modify7'
 	,'a.auto_seq','f.member_name','a.confirm7','a.subcontractor_id2','a.construction_floor2','a.total_contract_amt2','a.subcontractor_id3','a.construction_floor3','a.total_contract_amt3','a.subcontractor_id4'
-	,'a.construction_floor4','a.total_contract_amt4','a.subcontracting_progress');
+	,'a.construction_floor4','a.total_contract_amt4','a.subcontracting_progress','estimated_arrival_date');
 			
 	/* Indexed column (used for fast and accurate table cardinality) */
 	$sIndexColumn = "auto_seq";
@@ -191,9 +191,11 @@
 	*/
 
 	if ($sWhere=="")
-		$sWhere = "WHERE (a.status1 <> '已完工' AND a.status1 = '已簽約' AND a.confirm4 = 'Y') ";
+		$sWhere = "WHERE (a.status1 <> '已完工' AND a.status1 = '已簽約' AND a.confirm4 = 'Y') AND (a.ContractingModel IS NULL 
+     OR a.ContractingModel NOT IN ('材料買賣(BH)', '租賃(RH)'))";
 	else
-		$sWhere .= " and (a.status1 <> '已完工' AND a.status1 = '已簽約' AND a.confirm4 = 'Y') ";
+		$sWhere .= " and (a.status1 <> '已完工' AND a.status1 = '已簽約' AND a.confirm4 = 'Y') AND (a.ContractingModel IS NULL 
+     OR a.ContractingModel NOT IN ('材料買賣(BH)', '租賃(RH)')) ";
 
 	$sQuery = "
 		SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns))."
