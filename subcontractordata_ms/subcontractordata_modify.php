@@ -294,6 +294,19 @@ if ($mDB->rowCount() > 0) {
 	}
 }
 
+//載入所有上包-建商名稱
+$Qry="SELECT subcontractor_id,subcontractor_name FROM subcontractor ORDER BY auto_seq";
+$mDB->query($Qry);
+$subcontractor_id_list = "";
+
+if ($mDB->rowCount() > 0) {
+	while ($row=$mDB->fetchRow(2)) {
+		$ch_subcontractor = $row['subcontractor_id'];
+		$ch_subcontractor_name = $row['subcontractor_name'];
+		$subcontractor_id_list .= "<option value=\"$ch_subcontractor\">$ch_subcontractor $ch_subcontractor_name</option>";
+	}
+}
+
 
 
 
@@ -332,6 +345,9 @@ if ($mDB->rowCount() > 0) {
 
 
 $mDB->remove();
+$m_location		= "/smarty/templates/".$site_db."/".$templates;
+$ajax_get_subcontractor = $m_location."/sub_modal/project/func02/subcontractordata_ms/ajax_get_subcontractor.php";
+
 
 
 $show_savebtn=<<<EOT
@@ -743,6 +759,18 @@ $style_css
 							<input type="text" class="inputtext" id="total_contract_amt4" name="total_contract_amt4" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt4" onchange="setEdit();"/>
 						</div> 
 					</div>
+
+					<div>
+						<div class="field_div1">上包-建商名稱:</div> 
+						<div class="field_div2">
+							
+							<input list="subcontractor_id_list" type="text" class="inputtext w-100" id="subcontractor_id" name="subcontractor_id" autocomplete="off" value="$subcontractor_id" style="width:100%;max-width:250px;"/>
+							<datalist id="subcontractor_id_list">
+								$subcontractor_id_list
+							</datalist>
+							<div id="subcontractor_info">$subcontractor_name</div>
+						</div> 
+					</div>
 					<!--
 					<div>
 						<div class="field_div1">設定:</div> 
@@ -854,6 +882,34 @@ $(document).ready(async function() {
 	await new Promise(resolve => setTimeout(resolve, 100));
 	$('#status1').focus();
 });
+
+$('#subcontractor_id').on('input', function() {
+    var subcontractor_id = $(this).val();  // 即時取得 input 的值
+    //$('#subcontractor_info').text(subcontractor_id);   // 顯示在畫面上
+	if (subcontractor_id !== '') {
+		$.ajax({
+			url: '$ajax_get_subcontractor', // 後端 PHP 檔案
+			method: 'POST',
+			data: { site_db : '$site_db', subcontractor_id: subcontractor_id },
+			dataType: 'json',
+			success: function (response) {
+				if (response.success) {
+					$('#subcontractor_info').text(response.subcontractor_name);
+				} else {
+					$('#subcontractor_info').text('');
+				}
+
+			},
+			error: function () {
+		    	$('#subcontractor_info').text('');   // 顯示在畫面上
+			}
+		});
+
+	} else {
+    	$('#subcontractor_info').text('');   // 顯示在畫面上
+	}
+
+  });
 
 </script>
 
