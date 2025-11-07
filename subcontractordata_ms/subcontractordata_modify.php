@@ -238,73 +238,17 @@ if ($mDB->rowCount() > 0) {
 }
 
 
-//載入下包代工1
-$Qry="select subcontractor_id,subcontractor_name from subcontractor order by auto_seq";
-$mDB->query($Qry);
-$select_subcontractor1 = "";
-$select_subcontractor1 .= "<option></option>";
-
-if ($mDB->rowCount() > 0) {
-	while ($row=$mDB->fetchRow(2)) {
-		$ch_subcontractor_id1 = $row['subcontractor_id'];
-		$ch_subcontractor_name1 = $row['subcontractor_name'];
-		$select_subcontractor1 .= "<option value=\"$ch_subcontractor_id1\" ".mySelect($ch_subcontractor_id1,$subcontractor_id1).">$ch_subcontractor_id1 $ch_subcontractor_name1</option>";
-	}
-}
-
-//載入下包代工2
-$Qry="select subcontractor_id,subcontractor_name from subcontractor order by auto_seq";
-$mDB->query($Qry);
-$select_subcontractor2 = "";
-$select_subcontractor2 .= "<option></option>";
-
-if ($mDB->rowCount() > 0) {
-	while ($row=$mDB->fetchRow(2)) {
-		$ch_subcontractor_id2 = $row['subcontractor_id'];
-		$ch_subcontractor_name2 = $row['subcontractor_name'];
-		$select_subcontractor2 .= "<option value=\"$ch_subcontractor_id2\" ".mySelect($ch_subcontractor_id2,$subcontractor_id2).">$ch_subcontractor_id2 $ch_subcontractor_name2</option>";
-	}
-}
-
-//載入下包代工3
-$Qry="select subcontractor_id,subcontractor_name from subcontractor order by auto_seq";
-$mDB->query($Qry);
-$select_subcontractor3 = "";
-$select_subcontractor3 .= "<option></option>";
-
-if ($mDB->rowCount() > 0) {
-	while ($row=$mDB->fetchRow(2)) {
-		$ch_subcontractor_id3 = $row['subcontractor_id'];
-		$ch_subcontractor_name3 = $row['subcontractor_name'];
-		$select_subcontractor3 .= "<option value=\"$ch_subcontractor_id3\" ".mySelect($ch_subcontractor_id3,$subcontractor_id3).">$ch_subcontractor_id3 $ch_subcontractor_name3</option>";
-	}
-}
-
-//載入下包代工4
-$Qry="select subcontractor_id,subcontractor_name from subcontractor order by auto_seq";
-$mDB->query($Qry);
-$select_subcontractor4 = "";
-$select_subcontractor4 .= "<option></option>";
-
-if ($mDB->rowCount() > 0) {
-	while ($row=$mDB->fetchRow(2)) {
-		$ch_subcontractor_id4 = $row['subcontractor_id'];
-		$ch_subcontractor_name4 = $row['subcontractor_name'];
-		$select_subcontractor4 .= "<option value=\"$ch_subcontractor_id4\" ".mySelect($ch_subcontractor_id4,$subcontractor_id4).">$ch_subcontractor_id4 $ch_subcontractor_name4</option>";
-	}
-}
-
-//載入所有上包-建商名稱
-$Qry="SELECT subcontractor_id,subcontractor_name FROM subcontractor ORDER BY auto_seq";
+//載入下包代工
+$Qry = "SELECT subcontractor_id, subcontractor_name FROM subcontractor ORDER BY auto_seq";
 $mDB->query($Qry);
 $subcontractor_id_list = "";
 
 if ($mDB->rowCount() > 0) {
-	while ($row=$mDB->fetchRow(2)) {
-		$ch_subcontractor = $row['subcontractor_id'];
-		$ch_subcontractor_name = $row['subcontractor_name'];
-		$subcontractor_id_list .= "<option value=\"$ch_subcontractor\">$ch_subcontractor $ch_subcontractor_name</option>";
-	}
+    while ($row = $mDB->fetchRow(2)) {
+        $ch_subcontractor = $row['subcontractor_id'];
+        $ch_subcontractor_name = $row['subcontractor_name'];
+        $subcontractor_id_list .= "<option value=\"$ch_subcontractor\">$ch_subcontractor $ch_subcontractor_name</option>";
+    }
 }
 
 
@@ -679,13 +623,15 @@ $style_css
 							</select>
 						</div> 
 					</div>
-					<div>
-						<div class="field_div1">下包代工1:</div> 
-						<div class="field_div2">
-							<select id="subcontractor_id1" name="subcontractor_id1" placeholder="請選擇下包代工1" style="width:100%;max-width:350px;">
-								$select_subcontractor1
-							</select>
-						</div> 
+					<div class="field_div1">下包代工1:</div>
+					<div class="field_div2">
+						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
+							id="subcontractor_id1" name="subcontractor_id1" autocomplete="off" 
+							value="$subcontractor_id1"style="width:100%;max-width:250px;"/>
+						<datalist id="subcontractor_id_list">
+							$subcontractor_id_list
+						</datalist>
+						<div id="subcontractor_info1"></div>
 					</div>
 					<div>
 						<div class="field_div1">施作樓層1:</div> 
@@ -699,14 +645,15 @@ $style_css
 							<input type="text" class="inputtext" id="total_contract_amt1" name="total_contract_amt1" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt1" onchange="setEdit();"/>
 						</div> 
 					</div>
-					<div>
-						<div class="field_div1">下包代工2:</div> 
-						<div class="field_div2">
-							<select id="subcontractor_id2" name="subcontractor_id2" placeholder="請選擇下包代工2" style="width:100%;max-width:350px;">
-								$select_subcontractor2
-							</select>
-						</div> 
+
+					<div class="field_div1">下包代工2:</div>
+					<div class="field_div2">
+						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
+							id="subcontractor_id2" name="subcontractor_id2" autocomplete="off" 
+							value="$subcontractor_id2"style="width:100%;max-width:250px;"/>
+						<div id="subcontractor_info2"></div>
 					</div>
+
 					<div>
 						<div class="field_div1">施作樓層2:</div> 
 						<div class="field_div2">
@@ -719,14 +666,15 @@ $style_css
 							<input type="text" class="inputtext" id="total_contract_amt2" name="total_contract_amt2" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt2" onchange="setEdit();"/>
 						</div> 
 					</div>
-					<div>
-						<div class="field_div1">下包代工3:</div> 
-						<div class="field_div2">
-							<select id="subcontractor_id3" name="subcontractor_id3" placeholder="請選擇下包代工3" style="width:100%;max-width:350px;">
-								$select_subcontractor3
-							</select>
-						</div> 
+
+					<div class="field_div1">下包代工3:</div>
+					<div class="field_div2">
+						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
+							id="subcontractor_id3" name="subcontractor_id3" autocomplete="off"
+							value="$subcontractor_id3"style="width:100%;max-width:250px;"/>
+						<div id="subcontractor_info3"></div>
 					</div>
+
 					<div>
 						<div class="field_div1">施作樓層3:</div> 
 						<div class="field_div2">
@@ -739,14 +687,16 @@ $style_css
 							<input type="text" class="inputtext" id="total_contract_amt3" name="total_contract_amt3" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt3" onchange="setEdit();"/>
 						</div> 
 					</div>
-					<div>
-						<div class="field_div1">下包代工4:</div> 
-						<div class="field_div2">
-							<select id="subcontractor_id4" name="subcontractor_id4" placeholder="請選擇下包代工4" style="width:100%;max-width:350px;">
-								$select_subcontractor4
-							</select>
-						</div> 
+
+					
+					<div class="field_div1">下包代工4:</div>
+					<div class="field_div2">
+						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
+							id="subcontractor_id4" name="subcontractor_id4" autocomplete="off" 
+							value="$subcontractor_id4"style="width:100%;max-width:250px;"/>
+						<div id="subcontractor_info4"></div>
 					</div>
+
 					<div>
 						<div class="field_div1">施作樓層4:</div> 
 						<div class="field_div2">
@@ -761,16 +711,7 @@ $style_css
 					</div>
 
 					<div>
-						<div class="field_div1">上包-建商名稱:</div> 
-						<div class="field_div2">
-							
-							<input list="subcontractor_id_list" type="text" class="inputtext w-100" id="subcontractor_id" name="subcontractor_id" autocomplete="off" value="$subcontractor_id" style="width:100%;max-width:250px;"/>
-							<datalist id="subcontractor_id_list">
-								$subcontractor_id_list
-							</datalist>
-							<div id="subcontractor_info">$subcontractor_name</div>
-						</div> 
-					</div>
+				</div>
 					<!--
 					<div>
 						<div class="field_div1">設定:</div> 
@@ -883,33 +824,48 @@ $(document).ready(async function() {
 	$('#status1').focus();
 });
 
-$('#subcontractor_id').on('input', function() {
-    var subcontractor_id = $(this).val();  // 即時取得 input 的值
-    //$('#subcontractor_info').text(subcontractor_id);   // 顯示在畫面上
-	if (subcontractor_id !== '') {
-		$.ajax({
-			url: '$ajax_get_subcontractor', // 後端 PHP 檔案
-			method: 'POST',
-			data: { site_db : '$site_db', subcontractor_id: subcontractor_id },
-			dataType: 'json',
-			success: function (response) {
-				if (response.success) {
-					$('#subcontractor_info').text(response.subcontractor_name);
-				} else {
-					$('#subcontractor_info').text('');
-				}
+function bindSubcontractorLookup(inputId, infoId) {
+    function fetchSubcontractorInfo(subcontractor_id) {
+        if (subcontractor_id !== '') {
+            $.ajax({
+                url: '$ajax_get_subcontractor',
+                method: 'POST',
+                data: { site_db : '$site_db', subcontractor_id: subcontractor_id },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        $('#' + infoId).text(response.subcontractor_name);
+                    } else {
+                        $('#' + infoId).text('');
+                    }
+                },
+                error: function () {
+                    $('#' + infoId).text('');
+                }
+            });
+        } else {
+            $('#' + infoId).text('');
+        }
+    }
 
-			},
-			error: function () {
-		    	$('#subcontractor_info').text('');   // 顯示在畫面上
-			}
-		});
+    // 綁定輸入事件
+    $('#' + inputId).on('input', function() {
+        fetchSubcontractorInfo($(this).val());
+    });
 
-	} else {
-    	$('#subcontractor_info').text('');   // 顯示在畫面上
-	}
+    // 頁面載入時若已有值，立即查詢
+    var initialVal = $('#' + inputId).val();
+    if (initialVal !== '') {
+        fetchSubcontractorInfo(initialVal);
+    }
+}
 
-  });
+$(document).ready(function(){
+    bindSubcontractorLookup('subcontractor_id1', 'subcontractor_info1');
+    bindSubcontractorLookup('subcontractor_id2', 'subcontractor_info2');
+    bindSubcontractorLookup('subcontractor_id3', 'subcontractor_info3');
+    bindSubcontractorLookup('subcontractor_id4', 'subcontractor_info4');
+});
 
 </script>
 
