@@ -625,12 +625,15 @@ $style_css
 					</div>
 					<div class="field_div1">下包代工1:</div>
 					<div class="field_div2">
+						<!-- 輸入框 + datalist 下拉選單 -->
 						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
-							id="subcontractor_id1" name="subcontractor_id1" autocomplete="off" 
-							value="$subcontractor_id1"style="width:100%;max-width:250px;"/>
+							id="subcontractor_id1" name="subcontractor_id1" autocomplete="off" value="$subcontractor_id1" 
+							style="width:100%;max-width:250px;"/>
+						<!-- 建商選單清單 -->
 						<datalist id="subcontractor_id_list">
 							$subcontractor_id_list
 						</datalist>
+						<!-- 顯示查詢結果 (建商名稱) -->
 						<div id="subcontractor_info1"></div>
 					</div>
 					<div>
@@ -824,42 +827,54 @@ $(document).ready(async function() {
 	$('#status1').focus();
 });
 
+// 綁定輸入框查詢功能
 function bindSubcontractorLookup(inputId, infoId) {
+
+    // 內部函式：根據輸入的下包代號查詢資料
     function fetchSubcontractorInfo(subcontractor_id) {
         if (subcontractor_id !== '') {
+            // 發送 AJAX 請求到後端查詢建商資訊
             $.ajax({
-                url: '$ajax_get_subcontractor',
-                method: 'POST',
-                data: { site_db : '$site_db', subcontractor_id: subcontractor_id },
+                url: '$ajax_get_subcontractor',       // 查詢的後端 API
+                method: 'POST',                       // 使用 POST 傳送
+                data: { 
+                    site_db : '$site_db',             // 傳送目前站台資料庫
+                    subcontractor_id: subcontractor_id // 傳送輸入的下包代號
+                },
                 dataType: 'json',
                 success: function (response) {
+                    // 若回傳 success=true，顯示對應的名稱
                     if (response.success) {
                         $('#' + infoId).text(response.subcontractor_name);
                     } else {
+                        // 若查無資料，清空顯示欄
                         $('#' + infoId).text('');
                     }
                 },
                 error: function () {
+                    // 若 AJAX 請求失敗，也清空顯示欄
                     $('#' + infoId).text('');
                 }
             });
         } else {
+            // 若輸入框為空，清空顯示欄
             $('#' + infoId).text('');
         }
     }
 
-    // 綁定輸入事件
+    // 綁定輸入事件：當使用者輸入代號時自動查詢
     $('#' + inputId).on('input', function() {
         fetchSubcontractorInfo($(this).val());
     });
 
-    // 頁面載入時若已有值，立即查詢
+    // 若頁面載入時該欄位已有值，自動查詢一次
     var initialVal = $('#' + inputId).val();
     if (initialVal !== '') {
         fetchSubcontractorInfo(initialVal);
     }
 }
 
+// 頁面載入完成後，對四組輸入框進行綁定
 $(document).ready(function(){
     bindSubcontractorLookup('subcontractor_id1', 'subcontractor_info1');
     bindSubcontractorLookup('subcontractor_id2', 'subcontractor_info2');
