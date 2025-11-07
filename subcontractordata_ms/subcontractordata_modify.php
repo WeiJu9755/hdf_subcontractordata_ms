@@ -27,6 +27,24 @@ function processform($aFormValues){
 	
 	$web_id				= trim($aFormValues['web_id']);
 	$auto_seq			= trim($aFormValues['auto_seq']);
+
+	 // 統一定義要檢查的欄位組
+    $checkPairs = [
+        ['id' => 'subcontractor_id1', 'floor' => 'construction_floor1', 'msg' => '已填寫下包代工1時，請同時填寫施作樓層1。'],
+        ['id' => 'subcontractor_id2', 'floor' => 'construction_floor2', 'msg' => '已填寫下包代工2時，請同時填寫施作樓層2。'],
+        ['id' => 'subcontractor_id3', 'floor' => 'construction_floor3', 'msg' => '已填寫下包代工3時，請同時填寫施作樓層3。'],
+		['id' => 'subcontractor_id4', 'floor' => 'construction_floor4', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層4。'],
+    ];
+
+    // 逐一檢查
+    foreach ($checkPairs as $pair) {
+        $sub_id   = trim($aFormValues[$pair['id']]);
+        $floor_id = trim($aFormValues[$pair['floor']]);
+        if ($sub_id != "" && $floor_id == "") {
+            $objResponse->script("jAlert('警示', '{$pair['msg']}', 'red', '', 2000);");
+            return $objResponse;
+        }
+    }
 	
 	SaveValue($aFormValues);
 	
