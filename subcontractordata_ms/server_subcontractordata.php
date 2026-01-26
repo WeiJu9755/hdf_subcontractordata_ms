@@ -34,7 +34,7 @@
 
 	$aColumns = array( 'a.status1','a.status2','a.region','a.case_id','a.construction_id','b.engineering_name','a.subcontractor_id1','a.construction_floor1','a.total_contract_amt1','a.makeby7','a.last_modify7'
 	,'a.auto_seq','f.member_name','a.confirm7','a.subcontractor_id2','a.construction_floor2','a.total_contract_amt2','a.subcontractor_id3','a.construction_floor3','a.total_contract_amt3','a.subcontractor_id4'
-	,'a.construction_floor4','a.total_contract_amt4','a.subcontracting_progress','estimated_arrival_date');
+	,'a.construction_floor4','a.total_contract_amt4','a.subcontracting_progress','a.estimated_arrival_date','a.update_count7');
 			
 	/* Indexed column (used for fast and accurate table cardinality) */
 	$sIndexColumn = "auto_seq";
