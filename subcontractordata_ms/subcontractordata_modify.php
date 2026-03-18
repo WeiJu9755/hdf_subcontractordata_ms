@@ -34,6 +34,8 @@ function processform($aFormValues){
         ['id' => 'subcontractor_id2', 'floor' => 'construction_floor2', 'msg' => '已填寫下包代工2時，請同時填寫施作樓層2。'],
         ['id' => 'subcontractor_id3', 'floor' => 'construction_floor3', 'msg' => '已填寫下包代工3時，請同時填寫施作樓層3。'],
 		['id' => 'subcontractor_id4', 'floor' => 'construction_floor4', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層4。'],
+		['id' => 'subcontractor_id9', 'floor' => 'construction_floor9', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層5。'],
+		['id' => 'subcontractor_id10', 'floor' => 'construction_floor10', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層6。'],
     ];
 
     // 逐一檢查
@@ -84,6 +86,12 @@ function SaveValue($aFormValues){
 		$subcontractor_id4		= trim($aFormValues['subcontractor_id4']);
 		$construction_floor4	= trim($aFormValues['construction_floor4']);
 		$total_contract_amt4 	= trim($aFormValues['total_contract_amt4']);
+		$subcontractor_id9		= trim($aFormValues['subcontractor_id9']);
+		$construction_floor9	= trim($aFormValues['construction_floor9']);
+		$total_contract_amt9 	= trim($aFormValues['total_contract_amt9']);
+		$subcontractor_id10		= trim($aFormValues['subcontractor_id10']);
+		$construction_floor10	= trim($aFormValues['construction_floor10']);
+		$total_contract_amt10 	= trim($aFormValues['total_contract_amt10']);
 
 		//$confirm7				= trim($aFormValues['confirm7']);
 		
@@ -107,6 +115,12 @@ function SaveValue($aFormValues){
 				,subcontractor_id4	= '$subcontractor_id4'
 				,construction_floor4 = '$construction_floor4'
 				,total_contract_amt4= '$total_contract_amt4'
+				,subcontractor_id9	= '$subcontractor_id9'
+				,construction_floor9 = '$construction_floor9'
+				,total_contract_amt9= '$total_contract_amt9'
+				,subcontractor_id10	= '$subcontractor_id10'
+				,construction_floor10 = '$construction_floor10'
+				,total_contract_amt10= '$total_contract_amt10'
 				,makeby7			= '$memberID'
 				,last_modify7		= now()
 				,update_count7		= update_count7 + 1
@@ -228,6 +242,14 @@ if ($total > 0) {
 	$subcontractor_id4 = $row['subcontractor_id4'];
 	$construction_floor4 = $row['construction_floor4'];
 	$total_contract_amt4 = $row['total_contract_amt4'];
+
+	$subcontractor_id9 = $row['subcontractor_id9'];
+	$construction_floor9 = $row['construction_floor9'];
+	$total_contract_amt9 = $row['total_contract_amt9'];
+
+	$subcontractor_id10 = $row['subcontractor_id10'];
+	$construction_floor10 = $row['construction_floor10'];
+	$total_contract_amt10 = $row['total_contract_amt10'];
 
 
 
@@ -732,6 +754,48 @@ $style_css
 						</div> 
 					</div>
 
+					<div class="field_div1">下包代工5:</div>
+					<div class="field_div2">
+						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
+							id="subcontractor_id9" name="subcontractor_id9" autocomplete="off" 
+							value="$subcontractor_id9"style="width:100%;max-width:250px;"/>
+						<div id="subcontractor_info9"></div>
+					</div>
+
+					<div>
+						<div class="field_div1">施作樓層5:</div> 
+						<div class="field_div2">
+							<input type="text" class="inputtext" id="construction_floor9" name="construction_floor9" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor9" onchange="setEdit();"/>
+						</div> 
+					</div>
+					<div>
+						<div class="field_div1">合約總價5(含稅):</div> 
+						<div class="field_div2">
+							<input type="text" class="inputtext" id="total_contract_amt9" name="total_contract_amt9" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt9" onchange="setEdit();"/>
+						</div> 
+					</div>
+
+					<div class="field_div1">下包代工6:</div>
+					<div class="field_div2">
+						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
+							id="subcontractor_id10" name="subcontractor_id10" autocomplete="off" 
+							value="$subcontractor_id10"style="width:100%;max-width:250px;"/>
+						<div id="subcontractor_info10"></div>
+					</div>
+
+					<div>
+						<div class="field_div1">施作樓層6:</div> 
+						<div class="field_div2">
+							<input type="text" class="inputtext" id="construction_floor10" name="construction_floor10" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor10" onchange="setEdit();"/>
+						</div> 
+					</div>
+					<div>
+						<div class="field_div1">合約總價6(含稅):</div> 
+						<div class="field_div2">
+							<input type="text" class="inputtext" id="total_contract_amt10" name="total_contract_amt10" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt10" onchange="setEdit();"/>
+						</div> 
+					</div>
+
 					<div>
 				</div>
 					<!--
@@ -899,6 +963,8 @@ $(document).ready(function(){
     bindSubcontractorLookup('subcontractor_id2', 'subcontractor_info2');
     bindSubcontractorLookup('subcontractor_id3', 'subcontractor_info3');
     bindSubcontractorLookup('subcontractor_id4', 'subcontractor_info4');
+	bindSubcontractorLookup('subcontractor_id9', 'subcontractor_info9');
+	bindSubcontractorLookup('subcontractor_id10', 'subcontractor_info10');
 });
 
 </script>
