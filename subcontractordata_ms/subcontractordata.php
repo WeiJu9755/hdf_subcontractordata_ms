@@ -84,6 +84,8 @@ function returnValue($auto_seq){
 			$subcontractor_id2 = $row['subcontractor_id2'];
 			$subcontractor_id3 = $row['subcontractor_id3'];
 			$subcontractor_id4 = $row['subcontractor_id4'];
+			$subcontractor_id9 = $row['subcontractor_id9'];
+			$subcontractor_id10 = $row['subcontractor_id10'];
 
 			$Qry2="SELECT subcontractor_name FROM subcontractor WHERE subcontractor_id = '$subcontractor_id1'";
 			$mDB2->query($Qry2);
@@ -110,6 +112,20 @@ function returnValue($auto_seq){
 				$subcontractor_id4 = $row2['subcontractor_name'];
 			}
 
+			$Qry2="SELECT subcontractor_name FROM subcontractor WHERE subcontractor_id = '$subcontractor_id9'";
+			$mDB2->query($Qry2);
+			if ($mDB2->rowCount() > 0) {
+				$row2=$mDB2->fetchRow(2);
+				$subcontractor_id9 = $row2['subcontractor_name'];
+			}
+
+			$Qry2="SELECT subcontractor_name FROM subcontractor WHERE subcontractor_id = '$subcontractor_id10'";
+			$mDB2->query($Qry2);
+			if ($mDB2->rowCount() > 0) {
+				$row2=$mDB2->fetchRow(2);
+				$subcontractor_id10 = $row2['subcontractor_name'];
+			}
+
 
 		}
 	}
@@ -122,7 +138,9 @@ function returnValue($auto_seq){
 	$objResponse->assign("subcontractor_id1".$auto_seq,"innerHTML",$subcontractor_id1);	
 	$objResponse->assign("subcontractor_id2".$auto_seq,"innerHTML",$subcontractor_id2);	
 	$objResponse->assign("subcontractor_id3".$auto_seq,"innerHTML",$subcontractor_id3);	
-	$objResponse->assign("subcontractor_id4".$auto_seq,"innerHTML",$subcontractor_id4);	
+	$objResponse->assign("subcontractor_id4".$auto_seq,"innerHTML",$subcontractor_id4);
+	$objResponse->assign("subcontractor_id9".$auto_seq,"innerHTML",$subcontractor_id9);
+	$objResponse->assign("subcontractor_id10".$auto_seq,"innerHTML",$subcontractor_id10);	
 	
 	
     return $objResponse;
@@ -354,6 +372,12 @@ $list_view=<<<EOT
 				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工4</th>
 				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層4</th>
 				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價4<br>(含稅)</th>
+				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工5</th>
+				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層5</th>
+				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價5<br>(含稅)</th>
+				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工6</th>
+				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層6</th>
+				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價6<br>(含稅)</th>
 				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">處理</th>
 				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">最後修改</th>
 			</tr>
@@ -509,7 +533,7 @@ $list_view
 
 				// 下包開始日期
 				var subcontracting_start_date = "";
-				subcontracting_start_date = (aData[24] && aData[24] !== "0000-00-00") ? dayjs(String(aData[24]).slice(0,10)).subtract(3, "month").format("YYYY-MM-DD"): "";
+				subcontracting_start_date = (aData[30] && aData[30] !== "0000-00-00") ? dayjs(String(aData[30]).slice(0,10)).subtract(3, "month").format("YYYY-MM-DD"): "";
 				
 
 				$('td:eq(5)', nRow).html( '<div class="d-flex justify-content-center align-items-center size12 text-center" style="height:auto;min-height:32px;">'+subcontracting_start_date+'</div>' );
@@ -518,13 +542,15 @@ $list_view
 				var subcontractor_name2 = '<div id="subcontractor_id2'+aData[11]+'"></div>';
 				var subcontractor_name3 = '<div id="subcontractor_id3'+aData[11]+'"></div>';
 				var subcontractor_name4 = '<div id="subcontractor_id4'+aData[11]+'"></div>';
+				var subcontractor_name9 = '<div id="subcontractor_id9'+aData[11]+'"></div>';
+				var subcontractor_name10 = '<div id="subcontractor_id10'+aData[11]+'"></div>';
 				xajax_returnValue(aData[11]);
 
 
 				//下包發包進度
 				var subcontracting_progress = "";
-				if (aData[23] != null && aData[23] != "")
-					subcontracting_progress = aData[23];
+				if (aData[29] != null && aData[29] != "")
+					subcontracting_progress = aData[29];
 
 				$('td:eq(6)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontracting_progress+'</div>' );
 
@@ -613,6 +639,48 @@ $list_view
 
 				$('td:eq(18)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt4+'</div>' );
 
+				//下包代工5
+				var subcontractor_id9 = "";
+				if (aData[23] != null && aData[23] != "")
+					subcontractor_id9 = aData[23];
+
+				$('td:eq(19)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name9+'</div>' );
+
+				//施作樓層5
+				var construction_floor9 = "";
+				if (aData[24] != null && aData[24] != "")
+					construction_floor9 = aData[24];
+
+				$('td:eq(20)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor9+'</div>' );
+
+				//合約總價5(含稅)
+				var total_contract_amt9 = "";
+				if (aData[25] != null && aData[25] != "")
+					total_contract_amt9 = number_format(aData[25]);
+
+				$('td:eq(21)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt9+'</div>' );
+
+				//下包代工6
+				var subcontractor_id10 = "";
+				if (aData[26] != null && aData[26] != "")
+					subcontractor_id10 = aData[26];
+
+				$('td:eq(22)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name10+'</div>' );
+
+				//施作樓層6
+				var construction_floor10 = "";
+				if (aData[27] != null && aData[27] != "")
+					construction_floor10 = aData[27];
+
+				$('td:eq(23)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor10+'</div>' );
+
+				//合約總價6(含稅)
+				var total_contract_amt10 = "";
+				if (aData[28] != null && aData[28] != "")
+					total_contract_amt10 = number_format(aData[28]);
+
+				$('td:eq(24)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt10+'</div>' );
+
 				/*
 				//確認
 				if ( aData[13] == "Y" ) {
@@ -624,6 +692,8 @@ $list_view
 				}
 				$('td:eq(17)', nRow).html( '<div class="text-center">'+img_check+'</div>' );
 				*/
+
+
 				var url1 = "openfancybox_edit('/index.php?ch=edit&auto_seq="+aData[11]+"&fm=$fm',800,'96%','');";
 				var mdel = "myDel("+aData[11]+");";
 
@@ -639,7 +709,7 @@ $list_view
 						+'</div>';
 				}
 
-				$('td:eq(19)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center" style="height:auto;min-height:32px;">'+show_btn+'</div>' );
+				$('td:eq(25)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center" style="height:auto;min-height:32px;">'+show_btn+'</div>' );
 
 				//最後修改
 				var last_modify7 = (aData[10] != null && aData[10] != "") 
@@ -651,7 +721,7 @@ $list_view
 					? '<span class="text-nowrap">' + aData[12] + '</span>' 
 					: "";
 				
-				var update_count_val = (aData[25] != null && aData[25] != "") ? aData[25] : "0";
+				var update_count_val = (aData[31] != null && aData[31] != "") ? aData[31] : "0";
 
 				if ((last_modify7 == null || last_modify7 == "") && (member_name == null || member_name == "")) {
 				
@@ -667,7 +737,7 @@ $list_view
 										'title="累計修改次數：' + update_count_val + '次">' + 
 										update_count_val + '</span>';
 
-				$('td:eq(20)', nRow).html( 
+				$('td:eq(26)', nRow).html( 
 					'<div class="text-center" style="height:auto;min-height:32px;">' + 
 						last_modify7 + 
 						'<div>' + member_name + update_count_html + '</div>' + 
