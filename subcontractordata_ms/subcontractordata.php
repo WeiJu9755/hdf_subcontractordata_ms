@@ -350,7 +350,7 @@ $list_view=<<<EOT
 		</div>
 	</div>
 	$show_ConfirmSending_btn
-	<table class="table table-bordered border-dark w-100" id="db_table" style="min-width:1200px;">
+	<table class="table table-bordered border-dark w-100" id="db_table" style="min-width:1500px;">
 		<thead class="table-light border-dark">
 			<tr style="border-bottom: 1px solid #000;">
 				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">狀態(1)</th>
@@ -360,31 +360,19 @@ $list_view=<<<EOT
 				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">案件編號</th>
 				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包開始日期</th>
 				<th class="text-center text-nowrap" style="width:˙%;padding: 10px;background-color: #CBF3FC;">下包發包進度</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工1</th>
-				<th class="text-center text-nowrap" style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層1</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價1<br>(含稅)</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工2</th>
-				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層2</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價2<br>(含稅)</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工3</th>
-				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層3</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價3<br>(含稅)</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工4</th>
-				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層4</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價4<br>(含稅)</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工5</th>
-				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層5</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價5<br>(含稅)</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">下包代工6</th>
-				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">施作樓層6</th>
-				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">合約總價6<br>(含稅)</th>
+				<th class="text-center text-nowrap" style="width:10%;padding: 10px;background-color: #CBF3FC;">下包商1</th>
+				<th class="text-center text-nowrap" style="width:10%;padding: 10px;background-color: #CBF3FC;">下包商2</th>
+				<th class="text-center text-nowrap" style="width:10%;padding: 10px;background-color: #CBF3FC;">下包商3</th>
+				<th class="text-center text-nowrap" style="width:10%;padding: 10px;background-color: #CBF3FC;">下包商4</th>
+				<th class="text-center text-nowrap" style="width:10%;padding: 10px;background-color: #CBF3FC;">下包商5</th>
+				<th class="text-center text-nowrap" style="width:10%;padding: 10px;background-color: #CBF3FC;">下包商6</th>
 				<th class="text-center text-nowrap" style="width:5%;padding: 10px;background-color: #CBF3FC;">處理</th>
 				<th class="text-center text-nowrap " style="width:4%;padding: 10px;background-color: #CBF3FC;">最後修改</th>
 			</tr>
 		</thead>
 		<tbody class="table-group-divider">
 			<tr>
-				<td colspan="20" class="dataTables_empty">資料載入中...</td>
+				<td colspan="15" class="dataTables_empty">資料載入中...</td>
 			</tr>
 		</tbody>
 	</table>
@@ -459,6 +447,36 @@ $show_view=<<<EOT
     max-height: 500px !important;
     overflow-y: auto !important;
     overflow-x: auto !important;
+}
+
+.subcontractor-cell {
+    min-width: 150px;
+    text-align: left;
+    white-space: normal !important;
+    word-break: break-word;
+}
+.subcontractor-cell .subcontractor-name {
+    color: #212529;
+    font-weight: 700;
+    line-height: 1.35;
+    min-height: 18px;
+}
+.subcontractor-cell .subcontractor-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    border-top: 1px solid #e6eef5;
+    margin-top: 4px;
+    padding-top: 4px;
+    color: #333;
+}
+.subcontractor-cell .meta-label {
+    color: #6c757d;
+    white-space: nowrap;
+}
+.subcontractor-cell .meta-value {
+    text-align: right;
+    word-break: break-all;
 }
 </style>
 
@@ -555,131 +573,22 @@ $list_view
 				$('td:eq(6)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontracting_progress+'</div>' );
 
 
-				//下包代工1
-				var subcontractor_id1 = "";
-				if (aData[6] != null && aData[6] != "")
-					subcontractor_id1 = aData[6];
+				function subcontractorCell(nameHtml, floor, amt) {
+					var floorText = (floor != null && floor != "") ? floor : "";
+					var amtText = (amt != null && amt != "") ? number_format(amt) : "";
+					return '<div class="subcontractor-cell size12">'
+						+ '<div class="subcontractor-name">'+nameHtml+'</div>'
+						+ '<div class="subcontractor-meta"><span class="meta-label">施作樓層</span><span class="meta-value">'+floorText+'</span></div>'
+						+ '<div class="subcontractor-meta"><span class="meta-label">合約總價</span><span class="meta-value">'+amtText+'</span></div>'
+						+ '</div>';
+				}
 
-				$('td:eq(7)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name1+'</div>' );
-
-				//施作樓層1
-				var construction_floor1 = "";
-				if (aData[7] != null && aData[7] != "")
-					construction_floor1 = aData[7];
-
-				$('td:eq(8)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor1+'</div>' );
-
-				//合約總價1(含稅)
-				var total_contract_amt1 = "";
-				if (aData[8] != null && aData[8] != "")
-					total_contract_amt1 = number_format(aData[8]);
-
-				$('td:eq(9)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt1+'</div>' );
-
-				//下包代工2
-				var subcontractor_id2 = "";
-				if (aData[14] != null && aData[14] != "")
-					subcontractor_id2 = aData[14];
-
-				$('td:eq(10)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name2+'</div>' );
-
-				//施作樓層2
-				var construction_floor2 = "";
-				if (aData[15] != null && aData[15] != "")
-					construction_floor2 = aData[15];
-
-				$('td:eq(11)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor2+'</div>' );
-
-				//合約總價2(含稅)
-				var total_contract_amt2 = "";
-				if (aData[16] != null && aData[16] != "")
-					total_contract_amt2 = number_format(aData[16]);
-
-				$('td:eq(12)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt2+'</div>' );
-
-				//下包代工3
-				var subcontractor_id3 = "";
-				if (aData[17] != null && aData[17] != "")
-					subcontractor_id3 = aData[17];
-
-				$('td:eq(13)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name3+'</div>' );
-
-				//施作樓層3
-				var construction_floor3 = "";
-				if (aData[18] != null && aData[18] != "")
-					construction_floor3 = aData[18];
-
-				$('td:eq(14)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor3+'</div>' );
-
-				//合約總價3(含稅)
-				var total_contract_amt3 = "";
-				if (aData[19] != null && aData[19] != "")
-					total_contract_amt3 = number_format(aData[19]);
-
-				$('td:eq(15)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt3+'</div>' );
-
-				//下包代工4
-				var subcontractor_id4 = "";
-				if (aData[20] != null && aData[20] != "")
-					subcontractor_id4 = aData[20];
-
-				$('td:eq(16)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name4+'</div>' );
-
-				//施作樓層4
-				var construction_floor4 = "";
-				if (aData[21] != null && aData[21] != "")
-					construction_floor4 = aData[21];
-
-				$('td:eq(17)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor4+'</div>' );
-
-				//合約總價4(含稅)
-				var total_contract_amt4 = "";
-				if (aData[22] != null && aData[22] != "")
-					total_contract_amt4 = number_format(aData[22]);
-
-				$('td:eq(18)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt4+'</div>' );
-
-				//下包代工5
-				var subcontractor_id9 = "";
-				if (aData[23] != null && aData[23] != "")
-					subcontractor_id9 = aData[23];
-
-				$('td:eq(19)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name9+'</div>' );
-
-				//施作樓層5
-				var construction_floor9 = "";
-				if (aData[24] != null && aData[24] != "")
-					construction_floor9 = aData[24];
-
-				$('td:eq(20)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor9+'</div>' );
-
-				//合約總價5(含稅)
-				var total_contract_amt9 = "";
-				if (aData[25] != null && aData[25] != "")
-					total_contract_amt9 = number_format(aData[25]);
-
-				$('td:eq(21)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt9+'</div>' );
-
-				//下包代工6
-				var subcontractor_id10 = "";
-				if (aData[26] != null && aData[26] != "")
-					subcontractor_id10 = aData[26];
-
-				$('td:eq(22)', nRow).html( '<div class="size12 text-center" style="width: 100%; word-break: break-all; white-space: normal; min-height:32px;">'+subcontractor_name10+'</div>' );
-
-				//施作樓層6
-				var construction_floor10 = "";
-				if (aData[27] != null && aData[27] != "")
-					construction_floor10 = aData[27];
-
-				$('td:eq(23)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+construction_floor10+'</div>' );
-
-				//合約總價6(含稅)
-				var total_contract_amt10 = "";
-				if (aData[28] != null && aData[28] != "")
-					total_contract_amt10 = number_format(aData[28]);
-
-				$('td:eq(24)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12 text-nowrap" style="height:auto;min-height:32px;">'+total_contract_amt10+'</div>' );
+				$('td:eq(7)', nRow).html(subcontractorCell(subcontractor_name1, aData[7], aData[8]));
+				$('td:eq(8)', nRow).html(subcontractorCell(subcontractor_name2, aData[15], aData[16]));
+				$('td:eq(9)', nRow).html(subcontractorCell(subcontractor_name3, aData[18], aData[19]));
+				$('td:eq(10)', nRow).html(subcontractorCell(subcontractor_name4, aData[21], aData[22]));
+				$('td:eq(11)', nRow).html(subcontractorCell(subcontractor_name9, aData[24], aData[25]));
+				$('td:eq(12)', nRow).html(subcontractorCell(subcontractor_name10, aData[27], aData[28]));
 
 				/*
 				//確認
@@ -694,7 +603,7 @@ $list_view
 				*/
 
 
-				var url1 = "openfancybox_edit('/index.php?ch=edit&auto_seq="+aData[11]+"&fm=$fm',800,'96%','');";
+				var url1 = "openfancybox_edit('/index.php?ch=edit&auto_seq="+aData[11]+"&fm=$fm',1200,'96%','');";
 				var mdel = "myDel("+aData[11]+");";
 
 				var show_btn = '';
@@ -709,7 +618,7 @@ $list_view
 						+'</div>';
 				}
 
-				$('td:eq(25)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center" style="height:auto;min-height:32px;">'+show_btn+'</div>' );
+				$('td:eq(13)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center" style="height:auto;min-height:32px;">'+show_btn+'</div>' );
 
 				//最後修改
 				var last_modify7 = (aData[10] != null && aData[10] != "") 
@@ -725,7 +634,7 @@ $list_view
 
 				if ((last_modify7 == null || last_modify7 == "") && (member_name == null || member_name == "")) {
 				
-				$('td:eq(20)', nRow).html('<div style="height:auto;min-height:32px;"></div>');
+				$('td:eq(14)', nRow).html('<div style="height:auto;min-height:32px;"></div>');
 
 				} else {
 
@@ -737,7 +646,7 @@ $list_view
 										'title="累計修改次數：' + update_count_val + '次">' + 
 										update_count_val + '</span>';
 
-				$('td:eq(26)', nRow).html( 
+				$('td:eq(14)', nRow).html( 
 					'<div class="text-center" style="height:auto;min-height:32px;">' + 
 						last_modify7 + 
 						'<div>' + member_name + update_count_html + '</div>' + 

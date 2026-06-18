@@ -34,8 +34,8 @@ function processform($aFormValues){
         ['id' => 'subcontractor_id2', 'floor' => 'construction_floor2', 'msg' => '已填寫下包代工2時，請同時填寫施作樓層2。'],
         ['id' => 'subcontractor_id3', 'floor' => 'construction_floor3', 'msg' => '已填寫下包代工3時，請同時填寫施作樓層3。'],
 		['id' => 'subcontractor_id4', 'floor' => 'construction_floor4', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層4。'],
-		['id' => 'subcontractor_id9', 'floor' => 'construction_floor9', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層5。'],
-		['id' => 'subcontractor_id10', 'floor' => 'construction_floor10', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層6。'],
+		['id' => 'subcontractor_id9', 'floor' => 'construction_floor9', 'msg' => '已填寫下包代工5時，請同時填寫施作樓層5。'],
+		['id' => 'subcontractor_id10', 'floor' => 'construction_floor10', 'msg' => '已填寫下包代工6時，請同時填寫施作樓層6。'],
     ];
 
     // 逐一檢查
@@ -378,6 +378,45 @@ $style_css=<<<EOT
   cursor: pointer;
 }
 
+.subcontractor-section {
+	margin: 18px 0 28px 0;
+	padding: 18px;
+	background: #f8fafc;
+	border: 1px solid #dce6ef;
+	border-radius: 8px;
+}
+.subcontractor-section-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #0f3d5e;
+	margin-bottom: 14px;
+}
+.subcontractor-grid {
+	display: grid;
+	grid-template-columns: minmax(180px, 1fr) minmax(220px, 1.4fr) minmax(160px, .8fr);
+	gap: 14px;
+	align-items: start;
+}
+.subcontractor-field label {
+	display: block;
+	font-size: 14px;
+	font-weight: 700;
+	color: #3c4b5a;
+	margin-bottom: 6px;
+}
+.subcontractor-field input,
+.subcontractor-field select {
+	width: 100% !important;
+	max-width: none !important;
+}
+.subcontractor-info {
+	min-height: 22px;
+	margin-top: 6px;
+	color: #0d6efd;
+	font-size: 14px;
+	font-weight: 700;
+}
+
 </style>
 
 EOT;
@@ -410,6 +449,44 @@ $style_css=<<<EOT
 	width:auto;
 	text-align:left;
 	padding:0 10px 0 0;
+}
+
+.subcontractor-section {
+	margin: 18px 0 26px 0;
+	padding: 14px;
+	background: #f8fafc;
+	border: 1px solid #dce6ef;
+	border-radius: 8px;
+}
+.subcontractor-section-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #0f3d5e;
+	margin-bottom: 14px;
+}
+.subcontractor-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 12px;
+}
+.subcontractor-field label {
+	display: block;
+	font-size: 14px;
+	font-weight: 700;
+	color: #3c4b5a;
+	margin-bottom: 6px;
+}
+.subcontractor-field input,
+.subcontractor-field select {
+	width: 100% !important;
+	max-width: none !important;
+}
+.subcontractor-info {
+	min-height: 22px;
+	margin-top: 6px;
+	color: #0d6efd;
+	font-size: 14px;
+	font-weight: 700;
 }
 
 </style>
@@ -664,136 +741,122 @@ $style_css
 							</select>
 						</div> 
 					</div>
-					<div class="field_div1">下包代工1:</div>
-					<div class="field_div2">
-						<!-- 輸入框 + datalist 下拉選單 -->
-						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
-							id="subcontractor_id1" name="subcontractor_id1" autocomplete="off" value="$subcontractor_id1" 
-							style="width:100%;max-width:250px;"/>
-						<!-- 建商選單清單 -->
-						<datalist id="subcontractor_id_list">
-							$subcontractor_id_list
-						</datalist>
-						<!-- 顯示查詢結果 (建商名稱) -->
-						<div id="subcontractor_info1"></div>
-					</div>
-					<div>
-						<div class="field_div1">施作樓層1:</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="construction_floor1" name="construction_floor1" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor1" onchange="setEdit();"/>
-						</div> 
-					</div>
-					<div>
-						<div class="field_div1">合約總價1(含稅):</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="total_contract_amt1" name="total_contract_amt1" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt1" onchange="setEdit();"/>
-						</div> 
+					<datalist id="subcontractor_id_list">
+						$subcontractor_id_list
+					</datalist>
+
+					<div class="subcontractor-section">
+						<div class="subcontractor-section-title">下包商1</div>
+						<div class="subcontractor-grid">
+							<div class="subcontractor-field">
+								<label for="subcontractor_id1">下包商名稱</label>
+								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id1" name="subcontractor_id1" autocomplete="off" value="$subcontractor_id1" onchange="setEdit();"/>
+								<div class="subcontractor-info" id="subcontractor_info1"></div>
+							</div>
+							<div class="subcontractor-field">
+								<label for="construction_floor1">施作樓層</label>
+								<input type="text" class="inputtext" id="construction_floor1" name="construction_floor1" maxlength="160" value="$construction_floor1" onchange="setEdit();"/>
+							</div>
+							<div class="subcontractor-field">
+								<label for="total_contract_amt1">合約總價(含稅)</label>
+								<input type="text" class="inputtext" id="total_contract_amt1" name="total_contract_amt1" value="$total_contract_amt1" onchange="setEdit();"/>
+							</div>
+						</div>
 					</div>
 
-					<div class="field_div1">下包代工2:</div>
-					<div class="field_div2">
-						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
-							id="subcontractor_id2" name="subcontractor_id2" autocomplete="off" 
-							value="$subcontractor_id2"style="width:100%;max-width:250px;"/>
-						<div id="subcontractor_info2"></div>
+					<div class="subcontractor-section">
+						<div class="subcontractor-section-title">下包商2</div>
+						<div class="subcontractor-grid">
+							<div class="subcontractor-field">
+								<label for="subcontractor_id2">下包商名稱</label>
+								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id2" name="subcontractor_id2" autocomplete="off" value="$subcontractor_id2" onchange="setEdit();"/>
+								<div class="subcontractor-info" id="subcontractor_info2"></div>
+							</div>
+							<div class="subcontractor-field">
+								<label for="construction_floor2">施作樓層</label>
+								<input type="text" class="inputtext" id="construction_floor2" name="construction_floor2" maxlength="160" value="$construction_floor2" onchange="setEdit();"/>
+							</div>
+							<div class="subcontractor-field">
+								<label for="total_contract_amt2">合約總價(含稅)</label>
+								<input type="text" class="inputtext" id="total_contract_amt2" name="total_contract_amt2" value="$total_contract_amt2" onchange="setEdit();"/>
+							</div>
+						</div>
 					</div>
 
-					<div>
-						<div class="field_div1">施作樓層2:</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="construction_floor2" name="construction_floor2" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor2" onchange="setEdit();"/>
-						</div> 
-					</div>
-					<div>
-						<div class="field_div1">合約總價2(含稅):</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="total_contract_amt2" name="total_contract_amt2" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt2" onchange="setEdit();"/>
-						</div> 
-					</div>
-
-					<div class="field_div1">下包代工3:</div>
-					<div class="field_div2">
-						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
-							id="subcontractor_id3" name="subcontractor_id3" autocomplete="off"
-							value="$subcontractor_id3"style="width:100%;max-width:250px;"/>
-						<div id="subcontractor_info3"></div>
+					<div class="subcontractor-section">
+						<div class="subcontractor-section-title">下包商3</div>
+						<div class="subcontractor-grid">
+							<div class="subcontractor-field">
+								<label for="subcontractor_id3">下包商名稱</label>
+								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id3" name="subcontractor_id3" autocomplete="off" value="$subcontractor_id3" onchange="setEdit();"/>
+								<div class="subcontractor-info" id="subcontractor_info3"></div>
+							</div>
+							<div class="subcontractor-field">
+								<label for="construction_floor3">施作樓層</label>
+								<input type="text" class="inputtext" id="construction_floor3" name="construction_floor3" maxlength="160" value="$construction_floor3" onchange="setEdit();"/>
+							</div>
+							<div class="subcontractor-field">
+								<label for="total_contract_amt3">合約總價(含稅)</label>
+								<input type="text" class="inputtext" id="total_contract_amt3" name="total_contract_amt3" value="$total_contract_amt3" onchange="setEdit();"/>
+							</div>
+						</div>
 					</div>
 
-					<div>
-						<div class="field_div1">施作樓層3:</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="construction_floor3" name="construction_floor3" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor3" onchange="setEdit();"/>
-						</div> 
-					</div>
-					<div>
-						<div class="field_div1">合約總價3(含稅):</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="total_contract_amt3" name="total_contract_amt3" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt3" onchange="setEdit();"/>
-						</div> 
-					</div>
-
-					
-					<div class="field_div1">下包代工4:</div>
-					<div class="field_div2">
-						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
-							id="subcontractor_id4" name="subcontractor_id4" autocomplete="off" 
-							value="$subcontractor_id4"style="width:100%;max-width:250px;"/>
-						<div id="subcontractor_info4"></div>
+					<div class="subcontractor-section">
+						<div class="subcontractor-section-title">下包商4</div>
+						<div class="subcontractor-grid">
+							<div class="subcontractor-field">
+								<label for="subcontractor_id4">下包商名稱</label>
+								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id4" name="subcontractor_id4" autocomplete="off" value="$subcontractor_id4" onchange="setEdit();"/>
+								<div class="subcontractor-info" id="subcontractor_info4"></div>
+							</div>
+							<div class="subcontractor-field">
+								<label for="construction_floor4">施作樓層</label>
+								<input type="text" class="inputtext" id="construction_floor4" name="construction_floor4" maxlength="160" value="$construction_floor4" onchange="setEdit();"/>
+							</div>
+							<div class="subcontractor-field">
+								<label for="total_contract_amt4">合約總價(含稅)</label>
+								<input type="text" class="inputtext" id="total_contract_amt4" name="total_contract_amt4" value="$total_contract_amt4" onchange="setEdit();"/>
+							</div>
+						</div>
 					</div>
 
-					<div>
-						<div class="field_div1">施作樓層4:</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="construction_floor4" name="construction_floor4" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor4" onchange="setEdit();"/>
-						</div> 
-					</div>
-					<div>
-						<div class="field_div1">合約總價4(含稅):</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="total_contract_amt4" name="total_contract_amt4" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt4" onchange="setEdit();"/>
-						</div> 
-					</div>
-
-					<div class="field_div1">下包代工5:</div>
-					<div class="field_div2">
-						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
-							id="subcontractor_id9" name="subcontractor_id9" autocomplete="off" 
-							value="$subcontractor_id9"style="width:100%;max-width:250px;"/>
-						<div id="subcontractor_info9"></div>
+					<div class="subcontractor-section">
+						<div class="subcontractor-section-title">下包商5</div>
+						<div class="subcontractor-grid">
+							<div class="subcontractor-field">
+								<label for="subcontractor_id9">下包商名稱</label>
+								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id9" name="subcontractor_id9" autocomplete="off" value="$subcontractor_id9" onchange="setEdit();"/>
+								<div class="subcontractor-info" id="subcontractor_info9"></div>
+							</div>
+							<div class="subcontractor-field">
+								<label for="construction_floor9">施作樓層</label>
+								<input type="text" class="inputtext" id="construction_floor9" name="construction_floor9" maxlength="160" value="$construction_floor9" onchange="setEdit();"/>
+							</div>
+							<div class="subcontractor-field">
+								<label for="total_contract_amt9">合約總價(含稅)</label>
+								<input type="text" class="inputtext" id="total_contract_amt9" name="total_contract_amt9" value="$total_contract_amt9" onchange="setEdit();"/>
+							</div>
+						</div>
 					</div>
 
-					<div>
-						<div class="field_div1">施作樓層5:</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="construction_floor9" name="construction_floor9" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor9" onchange="setEdit();"/>
-						</div> 
-					</div>
-					<div>
-						<div class="field_div1">合約總價5(含稅):</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="total_contract_amt9" name="total_contract_amt9" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt9" onchange="setEdit();"/>
-						</div> 
-					</div>
-
-					<div class="field_div1">下包代工6:</div>
-					<div class="field_div2">
-						<input list="subcontractor_id_list" type="text" class="inputtext w-100" 
-							id="subcontractor_id10" name="subcontractor_id10" autocomplete="off" 
-							value="$subcontractor_id10"style="width:100%;max-width:250px;"/>
-						<div id="subcontractor_info10"></div>
-					</div>
-
-					<div>
-						<div class="field_div1">施作樓層6:</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="construction_floor10" name="construction_floor10" size="20" maxlength="160" style="width:100%;max-width:450px;" value="$construction_floor10" onchange="setEdit();"/>
-						</div> 
-					</div>
-					<div>
-						<div class="field_div1">合約總價6(含稅):</div> 
-						<div class="field_div2">
-							<input type="text" class="inputtext" id="total_contract_amt10" name="total_contract_amt10" size="20" style="width:100%;max-width:250px;" value="$total_contract_amt10" onchange="setEdit();"/>
-						</div> 
+					<div class="subcontractor-section">
+						<div class="subcontractor-section-title">下包商6</div>
+						<div class="subcontractor-grid">
+							<div class="subcontractor-field">
+								<label for="subcontractor_id10">下包商名稱</label>
+								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id10" name="subcontractor_id10" autocomplete="off" value="$subcontractor_id10" onchange="setEdit();"/>
+								<div class="subcontractor-info" id="subcontractor_info10"></div>
+							</div>
+							<div class="subcontractor-field">
+								<label for="construction_floor10">施作樓層</label>
+								<input type="text" class="inputtext" id="construction_floor10" name="construction_floor10" maxlength="160" value="$construction_floor10" onchange="setEdit();"/>
+							</div>
+							<div class="subcontractor-field">
+								<label for="total_contract_amt10">合約總價(含稅)</label>
+								<input type="text" class="inputtext" id="total_contract_amt10" name="total_contract_amt10" value="$total_contract_amt10" onchange="setEdit();"/>
+							</div>
+						</div>
 					</div>
 
 					<div>
