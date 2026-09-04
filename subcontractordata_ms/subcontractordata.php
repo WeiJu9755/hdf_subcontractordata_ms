@@ -573,22 +573,24 @@ $list_view
 				$('td:eq(6)', nRow).html( '<div class="d-flex justify-content-center align-items-center text-center size12" style="height:auto;min-height:32px;">'+subcontracting_progress+'</div>' );
 
 
-				function subcontractorCell(nameHtml, floor, amt) {
+				function subcontractorCell(nameHtml, building, floor, amt) {
+					var buildingText = (building != null && building != "") ? building : "";
 					var floorText = (floor != null && floor != "") ? floor : "";
 					var amtText = (amt != null && amt != "") ? number_format(amt) : "";
 					return '<div class="subcontractor-cell size12">'
 						+ '<div class="subcontractor-name">'+nameHtml+'</div>'
+						+ '<div class="subcontractor-meta"><span class="meta-label">棟別</span><span class="meta-value">'+buildingText+'</span></div>'
 						+ '<div class="subcontractor-meta"><span class="meta-label">施作樓層</span><span class="meta-value">'+floorText+'</span></div>'
 						+ '<div class="subcontractor-meta"><span class="meta-label">合約總價</span><span class="meta-value">'+amtText+'</span></div>'
 						+ '</div>';
 				}
 
-				$('td:eq(7)', nRow).html(subcontractorCell(subcontractor_name1, aData[7], aData[8]));
-				$('td:eq(8)', nRow).html(subcontractorCell(subcontractor_name2, aData[15], aData[16]));
-				$('td:eq(9)', nRow).html(subcontractorCell(subcontractor_name3, aData[18], aData[19]));
-				$('td:eq(10)', nRow).html(subcontractorCell(subcontractor_name4, aData[21], aData[22]));
-				$('td:eq(11)', nRow).html(subcontractorCell(subcontractor_name9, aData[24], aData[25]));
-				$('td:eq(12)', nRow).html(subcontractorCell(subcontractor_name10, aData[27], aData[28]));
+				$('td:eq(7)', nRow).html(subcontractorCell(subcontractor_name1, aData[32], aData[7], aData[8]));
+				$('td:eq(8)', nRow).html(subcontractorCell(subcontractor_name2, aData[33], aData[15], aData[16]));
+				$('td:eq(9)', nRow).html(subcontractorCell(subcontractor_name3, aData[34], aData[18], aData[19]));
+				$('td:eq(10)', nRow).html(subcontractorCell(subcontractor_name4, aData[35], aData[21], aData[22]));
+				$('td:eq(11)', nRow).html(subcontractorCell(subcontractor_name9, aData[36], aData[24], aData[25]));
+				$('td:eq(12)', nRow).html(subcontractorCell(subcontractor_name10, aData[37], aData[27], aData[28]));
 
 				/*
 				//確認

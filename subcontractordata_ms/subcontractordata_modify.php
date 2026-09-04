@@ -20,6 +20,78 @@ $detect = new Mobile_Detect;
 @include_once '/website/xajax/xajax_core/xajax.inc.php';
 $xajax = new xajax();
 
+/**
+ * 將 Select2 多選的值轉為資料庫儲存格式。
+ */
+function normalizeMultiSelectValue($value) {
+    if (!is_array($value)) {
+        $value = ($value === null || $value === '') ? [] : [$value];
+    }
+
+    $values = [];
+    foreach ($value as $item) {
+        $item = trim($item);
+        if ($item !== '' && !in_array($item, $values, true)) {
+            $values[] = $item;
+        }
+    }
+
+    return implode(',', $values);
+}
+
+/**
+ * 產生棟別多選欄位的 option；資料庫以逗號串接儲存已選棟別。
+ */
+function renderBuildingOptions($buildingOptions, $selectedValue) {
+    $selectedValues = array_filter(array_map('trim', explode(',', (string)$selectedValue)), 'strlen');
+    $html = '';
+
+    foreach ($buildingOptions as $building) {
+        $escapedBuilding = htmlspecialchars($building, ENT_QUOTES, 'UTF-8');
+        $selected = in_array($building, $selectedValues, true) ? ' selected' : '';
+        $html .= "<option value=\"{$escapedBuilding}\"{$selected}>{$escapedBuilding}</option>";
+    }
+
+    return $html;
+}
+
+/**
+ * 產生下包商欄位區塊。
+ */
+function renderSubcontractorSection($number, $subcontractorId, $constructionFloor, $buildings, $contractAmount, $buildingOptions) {
+    $subcontractorId = htmlspecialchars((string)$subcontractorId, ENT_QUOTES, 'UTF-8');
+    $constructionFloor = htmlspecialchars((string)$constructionFloor, ENT_QUOTES, 'UTF-8');
+    $contractAmount = htmlspecialchars((string)$contractAmount, ENT_QUOTES, 'UTF-8');
+    $buildingOptionsHtml = renderBuildingOptions($buildingOptions, $buildings);
+
+    return <<<HTML
+                    <div class="subcontractor-section">
+                        <div class="subcontractor-section-title">下包商{$number}</div>
+                        <div class="subcontractor-grid">
+                            <div class="subcontractor-field">
+                                <label for="subcontractor_id{$number}">下包商名稱</label>
+                                <input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id{$number}" name="subcontractor_id{$number}" autocomplete="off" value="{$subcontractorId}" onchange="setEdit();"/>
+                                <div class="subcontractor-info" id="subcontractor_info{$number}"></div>
+                            </div>
+							  <div class="subcontractor-field">
+                                <label for="subcontractor_buildings{$number}">棟別</label>
+                                <select class="subcontractor-building-select" id="subcontractor_buildings{$number}" name="subcontractor_buildings{$number}[]" multiple="multiple" onchange="setEdit();">
+                                    {$buildingOptionsHtml}
+                                </select>
+                            </div>
+                            <div class="subcontractor-field">
+                                <label for="construction_floor{$number}">施作樓層</label>
+                                <input type="text" class="inputtext" id="construction_floor{$number}" name="construction_floor{$number}" maxlength="160" value="{$constructionFloor}" onchange="setEdit();"/>
+                            </div>
+                            <div class="subcontractor-field">
+                                <label for="total_contract_amt{$number}">合約總價(含稅)</label>
+                                <input type="text" class="inputtext" id="total_contract_amt{$number}" name="total_contract_amt{$number}" value="{$contractAmount}" onchange="setEdit();"/>
+                            </div>
+                        </div>
+                    </div>
+HTML;
+}
+
 $xajax->registerFunction("processform");
 function processform($aFormValues){
 
@@ -29,19 +101,15 @@ function processform($aFormValues){
 	$auto_seq			= trim($aFormValues['auto_seq']);
 
 	 // 統一定義要檢查的欄位組
-    $checkPairs = [
-        ['id' => 'subcontractor_id1', 'floor' => 'construction_floor1', 'msg' => '已填寫下包代工1時，請同時填寫施作樓層1。'],
-        ['id' => 'subcontractor_id2', 'floor' => 'construction_floor2', 'msg' => '已填寫下包代工2時，請同時填寫施作樓層2。'],
-        ['id' => 'subcontractor_id3', 'floor' => 'construction_floor3', 'msg' => '已填寫下包代工3時，請同時填寫施作樓層3。'],
-		['id' => 'subcontractor_id4', 'floor' => 'construction_floor4', 'msg' => '已填寫下包代工4時，請同時填寫施作樓層4。'],
-		['id' => 'subcontractor_id9', 'floor' => 'construction_floor9', 'msg' => '已填寫下包代工5時，請同時填寫施作樓層5。'],
-		['id' => 'subcontractor_id10', 'floor' => 'construction_floor10', 'msg' => '已填寫下包代工6時，請同時填寫施作樓層6。'],
-    ];
+    $checkPairs = [];
+    foreach ([1, 2, 3, 4, 9, 10] as $i) {
+        $checkPairs[] = ['id' => "subcontractor_id{$i}", 'floor' => "construction_floor{$i}", 'msg' => "已填寫下包代工{$i}時，請同時填寫施作樓層{$i}。"];
+    }
 
     // 逐一檢查
     foreach ($checkPairs as $pair) {
-        $sub_id   = trim($aFormValues[$pair['id']]);
-        $floor_id = trim($aFormValues[$pair['floor']]);
+        $sub_id   = trim($aFormValues[$pair['id']] ?? '');
+        $floor_id = trim($aFormValues[$pair['floor']] ?? '');
         if ($sub_id != "" && $floor_id == "") {
             $objResponse->script("jAlert('警示', '{$pair['msg']}', 'red', '', 2000);");
             return $objResponse;
@@ -74,24 +142,15 @@ function SaveValue($aFormValues){
 		$status1				= trim($aFormValues['status1']);
 		$status2				= trim($aFormValues['status2']);
 		$subcontracting_progress		= trim($aFormValues['subcontracting_progress']);
-		$subcontractor_id1		= trim($aFormValues['subcontractor_id1']);
-		$construction_floor1	= trim($aFormValues['construction_floor1']);
-		$total_contract_amt1 	= trim($aFormValues['total_contract_amt1']);
-		$subcontractor_id2		= trim($aFormValues['subcontractor_id2']);
-		$construction_floor2	= trim($aFormValues['construction_floor2']);
-		$total_contract_amt2 	= trim($aFormValues['total_contract_amt2']);
-		$subcontractor_id3		= trim($aFormValues['subcontractor_id3']);
-		$construction_floor3	= trim($aFormValues['construction_floor3']);
-		$total_contract_amt3 	= trim($aFormValues['total_contract_amt3']);
-		$subcontractor_id4		= trim($aFormValues['subcontractor_id4']);
-		$construction_floor4	= trim($aFormValues['construction_floor4']);
-		$total_contract_amt4 	= trim($aFormValues['total_contract_amt4']);
-		$subcontractor_id9		= trim($aFormValues['subcontractor_id9']);
-		$construction_floor9	= trim($aFormValues['construction_floor9']);
-		$total_contract_amt9 	= trim($aFormValues['total_contract_amt9']);
-		$subcontractor_id10		= trim($aFormValues['subcontractor_id10']);
-		$construction_floor10	= trim($aFormValues['construction_floor10']);
-		$total_contract_amt10 	= trim($aFormValues['total_contract_amt10']);
+		$subcontractorValues = [];
+		foreach ([1, 2, 3, 4, 9, 10] as $i) {
+			$subcontractorValues[$i] = [
+				'id' => trim($aFormValues["subcontractor_id{$i}"] ?? ''),
+				'floor' => trim($aFormValues["construction_floor{$i}"] ?? ''),
+				'buildings' => normalizeMultiSelectValue($aFormValues["subcontractor_buildings{$i}"] ?? []),
+				'amount' => trim($aFormValues["total_contract_amt{$i}"] ?? ''),
+			];
+		}
 
 		//$confirm7				= trim($aFormValues['confirm7']);
 		
@@ -99,28 +158,21 @@ function SaveValue($aFormValues){
 		$mDB = "";
 		$mDB = new MywebDB();
 
+		$updateFields = [
+			"status1 = '$status1'",
+			"status2 = '$status2'",
+			"subcontracting_progress = '$subcontracting_progress'",
+		];
+		foreach ([1, 2, 3, 4, 9, 10] as $i) {
+			$values = $subcontractorValues[$i];
+			$updateFields[] = "subcontractor_id{$i} = '{$values['id']}'";
+			$updateFields[] = "construction_floor{$i} = '{$values['floor']}'";
+			$updateFields[] = "subcontractor_buildings{$i} = '{$values['buildings']}'";
+			$updateFields[] = "total_contract_amt{$i} = '{$values['amount']}'";
+		}
+
 		$Qry="UPDATE CaseManagement set
-				 status1			= '$status1'
-				,status2			= '$status2'
-				,subcontracting_progress	= '$subcontracting_progress'
-				,subcontractor_id1	= '$subcontractor_id1'
-				,construction_floor1 = '$construction_floor1'
-				,total_contract_amt1= '$total_contract_amt1'
-				,subcontractor_id2	= '$subcontractor_id2'
-				,construction_floor2 = '$construction_floor2'
-				,total_contract_amt2= '$total_contract_amt2'
-				,subcontractor_id3	= '$subcontractor_id3'
-				,construction_floor3 = '$construction_floor3'
-				,total_contract_amt3= '$total_contract_amt3'
-				,subcontractor_id4	= '$subcontractor_id4'
-				,construction_floor4 = '$construction_floor4'
-				,total_contract_amt4= '$total_contract_amt4'
-				,subcontractor_id9	= '$subcontractor_id9'
-				,construction_floor9 = '$construction_floor9'
-				,total_contract_amt9= '$total_contract_amt9'
-				,subcontractor_id10	= '$subcontractor_id10'
-				,construction_floor10 = '$construction_floor10'
-				,total_contract_amt10= '$total_contract_amt10'
+				 ".implode("\n\t\t\t\t,", $updateFields)."
 				,makeby7			= '$memberID'
 				,last_modify7		= now()
 				,update_count7		= update_count7 + 1
@@ -226,30 +278,16 @@ if ($total > 0) {
 	$total_contract_amt = $row['total_contract_amt'];
 
 
-	//下包代工1
-	$subcontractor_id1 = $row['subcontractor_id1'];
-	$construction_floor1 = $row['construction_floor1'];
-	$total_contract_amt1 = $row['total_contract_amt1'];
-
-	$subcontractor_id2 = $row['subcontractor_id2'];
-	$construction_floor2 = $row['construction_floor2'];
-	$total_contract_amt2 = $row['total_contract_amt2'];
-
-	$subcontractor_id3 = $row['subcontractor_id3'];
-	$construction_floor3 = $row['construction_floor3'];
-	$total_contract_amt3 = $row['total_contract_amt3'];
-
-	$subcontractor_id4 = $row['subcontractor_id4'];
-	$construction_floor4 = $row['construction_floor4'];
-	$total_contract_amt4 = $row['total_contract_amt4'];
-
-	$subcontractor_id9 = $row['subcontractor_id9'];
-	$construction_floor9 = $row['construction_floor9'];
-	$total_contract_amt9 = $row['total_contract_amt9'];
-
-	$subcontractor_id10 = $row['subcontractor_id10'];
-	$construction_floor10 = $row['construction_floor10'];
-	$total_contract_amt10 = $row['total_contract_amt10'];
+	//下包代工 1～10
+	$subcontractorValues = [];
+	for ($i = 1; $i <= 10; $i++) {
+		$subcontractorValues[$i] = [
+			'id' => $row["subcontractor_id{$i}"] ?? '',
+			'floor' => $row["construction_floor{$i}"] ?? '',
+			'buildings' => $row["subcontractor_buildings{$i}"] ?? '',
+			'amount' => $row["total_contract_amt{$i}"] ?? '',
+		];
+	}
 
 
 
@@ -290,6 +328,29 @@ if ($mDB->rowCount() > 0) {
         $ch_subcontractor_name = $row['subcontractor_name'];
         $subcontractor_id_list .= "<option value=\"$ch_subcontractor\">$ch_subcontractor $ch_subcontractor_name</option>";
     }
+}
+
+//載入棟別：Select2 多選的值與顯示文字均使用 items.caption。
+$Qry = "SELECT auto_seq, caption AS building FROM items WHERE pro_id = 'building' ORDER BY orderby, auto_seq";
+$mDB->query($Qry);
+$buildingOptions = [];
+if ($mDB->rowCount() > 0) {
+    while ($row = $mDB->fetchRow(2)) {
+        $buildingOptions[] = $row['building'];
+    }
+}
+
+$subcontractor_sections = '';
+foreach ([1, 2, 3, 4, 9, 10] as $i) {
+    $values = $subcontractorValues[$i] ?? ['id' => '', 'floor' => '', 'buildings' => '', 'amount' => ''];
+    $subcontractor_sections .= renderSubcontractorSection(
+        $i,
+        $values['id'],
+        $values['floor'],
+        $values['buildings'],
+        $values['amount'],
+        $buildingOptions
+    );
 }
 
 
@@ -393,7 +454,7 @@ $style_css=<<<EOT
 }
 .subcontractor-grid {
 	display: grid;
-	grid-template-columns: minmax(180px, 1fr) minmax(220px, 1.4fr) minmax(160px, .8fr);
+	grid-template-columns: minmax(170px, 1fr) minmax(180px, 1.1fr) minmax(200px, 1.2fr) minmax(150px, .8fr);
 	gap: 14px;
 	align-items: start;
 }
@@ -408,6 +469,10 @@ $style_css=<<<EOT
 .subcontractor-field select {
 	width: 100% !important;
 	max-width: none !important;
+}
+.subcontractor-building-select + .select2 {
+	width: 100% !important;
+	max-width: 450px !important;
 }
 .subcontractor-info {
 	min-height: 22px;
@@ -481,6 +546,10 @@ $style_css=<<<EOT
 	width: 100% !important;
 	max-width: none !important;
 }
+.subcontractor-building-select + .select2 {
+	width: 100% !important;
+	max-width: 450px !important;
+}
 .subcontractor-info {
 	min-height: 22px;
 	margin-top: 6px;
@@ -498,6 +567,8 @@ EOT;
 $show_center=<<<EOT
 
 $style_css
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
 <div class="card card_full">
 	<div class="card-header text-bg-info">
@@ -745,119 +816,7 @@ $style_css
 						$subcontractor_id_list
 					</datalist>
 
-					<div class="subcontractor-section">
-						<div class="subcontractor-section-title">下包商1</div>
-						<div class="subcontractor-grid">
-							<div class="subcontractor-field">
-								<label for="subcontractor_id1">下包商名稱</label>
-								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id1" name="subcontractor_id1" autocomplete="off" value="$subcontractor_id1" onchange="setEdit();"/>
-								<div class="subcontractor-info" id="subcontractor_info1"></div>
-							</div>
-							<div class="subcontractor-field">
-								<label for="construction_floor1">施作樓層</label>
-								<input type="text" class="inputtext" id="construction_floor1" name="construction_floor1" maxlength="160" value="$construction_floor1" onchange="setEdit();"/>
-							</div>
-							<div class="subcontractor-field">
-								<label for="total_contract_amt1">合約總價(含稅)</label>
-								<input type="text" class="inputtext" id="total_contract_amt1" name="total_contract_amt1" value="$total_contract_amt1" onchange="setEdit();"/>
-							</div>
-						</div>
-					</div>
-
-					<div class="subcontractor-section">
-						<div class="subcontractor-section-title">下包商2</div>
-						<div class="subcontractor-grid">
-							<div class="subcontractor-field">
-								<label for="subcontractor_id2">下包商名稱</label>
-								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id2" name="subcontractor_id2" autocomplete="off" value="$subcontractor_id2" onchange="setEdit();"/>
-								<div class="subcontractor-info" id="subcontractor_info2"></div>
-							</div>
-							<div class="subcontractor-field">
-								<label for="construction_floor2">施作樓層</label>
-								<input type="text" class="inputtext" id="construction_floor2" name="construction_floor2" maxlength="160" value="$construction_floor2" onchange="setEdit();"/>
-							</div>
-							<div class="subcontractor-field">
-								<label for="total_contract_amt2">合約總價(含稅)</label>
-								<input type="text" class="inputtext" id="total_contract_amt2" name="total_contract_amt2" value="$total_contract_amt2" onchange="setEdit();"/>
-							</div>
-						</div>
-					</div>
-
-					<div class="subcontractor-section">
-						<div class="subcontractor-section-title">下包商3</div>
-						<div class="subcontractor-grid">
-							<div class="subcontractor-field">
-								<label for="subcontractor_id3">下包商名稱</label>
-								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id3" name="subcontractor_id3" autocomplete="off" value="$subcontractor_id3" onchange="setEdit();"/>
-								<div class="subcontractor-info" id="subcontractor_info3"></div>
-							</div>
-							<div class="subcontractor-field">
-								<label for="construction_floor3">施作樓層</label>
-								<input type="text" class="inputtext" id="construction_floor3" name="construction_floor3" maxlength="160" value="$construction_floor3" onchange="setEdit();"/>
-							</div>
-							<div class="subcontractor-field">
-								<label for="total_contract_amt3">合約總價(含稅)</label>
-								<input type="text" class="inputtext" id="total_contract_amt3" name="total_contract_amt3" value="$total_contract_amt3" onchange="setEdit();"/>
-							</div>
-						</div>
-					</div>
-
-					<div class="subcontractor-section">
-						<div class="subcontractor-section-title">下包商4</div>
-						<div class="subcontractor-grid">
-							<div class="subcontractor-field">
-								<label for="subcontractor_id4">下包商名稱</label>
-								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id4" name="subcontractor_id4" autocomplete="off" value="$subcontractor_id4" onchange="setEdit();"/>
-								<div class="subcontractor-info" id="subcontractor_info4"></div>
-							</div>
-							<div class="subcontractor-field">
-								<label for="construction_floor4">施作樓層</label>
-								<input type="text" class="inputtext" id="construction_floor4" name="construction_floor4" maxlength="160" value="$construction_floor4" onchange="setEdit();"/>
-							</div>
-							<div class="subcontractor-field">
-								<label for="total_contract_amt4">合約總價(含稅)</label>
-								<input type="text" class="inputtext" id="total_contract_amt4" name="total_contract_amt4" value="$total_contract_amt4" onchange="setEdit();"/>
-							</div>
-						</div>
-					</div>
-
-					<div class="subcontractor-section">
-						<div class="subcontractor-section-title">下包商5</div>
-						<div class="subcontractor-grid">
-							<div class="subcontractor-field">
-								<label for="subcontractor_id9">下包商名稱</label>
-								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id9" name="subcontractor_id9" autocomplete="off" value="$subcontractor_id9" onchange="setEdit();"/>
-								<div class="subcontractor-info" id="subcontractor_info9"></div>
-							</div>
-							<div class="subcontractor-field">
-								<label for="construction_floor9">施作樓層</label>
-								<input type="text" class="inputtext" id="construction_floor9" name="construction_floor9" maxlength="160" value="$construction_floor9" onchange="setEdit();"/>
-							</div>
-							<div class="subcontractor-field">
-								<label for="total_contract_amt9">合約總價(含稅)</label>
-								<input type="text" class="inputtext" id="total_contract_amt9" name="total_contract_amt9" value="$total_contract_amt9" onchange="setEdit();"/>
-							</div>
-						</div>
-					</div>
-
-					<div class="subcontractor-section">
-						<div class="subcontractor-section-title">下包商6</div>
-						<div class="subcontractor-grid">
-							<div class="subcontractor-field">
-								<label for="subcontractor_id10">下包商名稱</label>
-								<input list="subcontractor_id_list" type="text" class="inputtext" id="subcontractor_id10" name="subcontractor_id10" autocomplete="off" value="$subcontractor_id10" onchange="setEdit();"/>
-								<div class="subcontractor-info" id="subcontractor_info10"></div>
-							</div>
-							<div class="subcontractor-field">
-								<label for="construction_floor10">施作樓層</label>
-								<input type="text" class="inputtext" id="construction_floor10" name="construction_floor10" maxlength="160" value="$construction_floor10" onchange="setEdit();"/>
-							</div>
-							<div class="subcontractor-field">
-								<label for="total_contract_amt10">合約總價(含稅)</label>
-								<input type="text" class="inputtext" id="total_contract_amt10" name="total_contract_amt10" value="$total_contract_amt10" onchange="setEdit();"/>
-							</div>
-						</div>
-					</div>
+					$subcontractor_sections
 
 					<div>
 				</div>
@@ -1020,14 +979,17 @@ function bindSubcontractorLookup(inputId, infoId) {
     }
 }
 
-// 頁面載入完成後，對四組輸入框進行綁定
+// 頁面載入完成後，對本專案負責的下包商輸入框與棟別多選欄位進行綁定
 $(document).ready(function(){
-    bindSubcontractorLookup('subcontractor_id1', 'subcontractor_info1');
-    bindSubcontractorLookup('subcontractor_id2', 'subcontractor_info2');
-    bindSubcontractorLookup('subcontractor_id3', 'subcontractor_info3');
-    bindSubcontractorLookup('subcontractor_id4', 'subcontractor_info4');
-	bindSubcontractorLookup('subcontractor_id9', 'subcontractor_info9');
-	bindSubcontractorLookup('subcontractor_id10', 'subcontractor_info10');
+    [1, 2, 3, 4, 9, 10].forEach(function(i) {
+        bindSubcontractorLookup('subcontractor_id' + i, 'subcontractor_info' + i);
+    });
+
+    $('.subcontractor-building-select').select2({
+        placeholder: '請選擇棟別',
+        width: '100%',
+        closeOnSelect: false
+    });
 });
 
 </script>
