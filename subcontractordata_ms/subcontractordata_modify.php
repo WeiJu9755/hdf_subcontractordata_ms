@@ -161,6 +161,13 @@ function SaveValue($aFormValues){
 		$updateFields = [
 			"status1 = '$status1'",
 			"status2 = '$status2'",
+			// 必須在更新 subcontracting_progress 前判斷原值；last_modify7 每次存檔都會變動。
+			"subcontracting_progress_signed_at = CASE
+				WHEN '$subcontracting_progress' = '已簽約'
+					AND NOT (subcontracting_progress <=> '已簽約') THEN NOW()
+				WHEN '$subcontracting_progress' <> '已簽約' THEN NULL
+				ELSE subcontracting_progress_signed_at
+			END",
 			"subcontracting_progress = '$subcontracting_progress'",
 		];
 		foreach ([1, 2, 3, 4, 9, 10] as $i) {
